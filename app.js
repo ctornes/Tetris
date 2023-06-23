@@ -4,8 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const punteggio = document.querySelector('#punteggio');
     const startbtn = document.querySelector('#start-button');
     let quadrati = Array.from(document.querySelectorAll('.grid div'));
+
     
-    const lBlock = [
+      const lBlock = [
         [1, larghezza+1, larghezza*2+1, 2],
         [larghezza, larghezza+1, larghezza+2, larghezza*2+2],
         [1, larghezza+1, larghezza*2+1, larghezza*2],
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Faccio scorrere il blocco ogni secondo
       timerID = setInterval(scorriSotto, 1000);
       
+
       function scorriSotto() {
         cancella();
         posizioneCorrente += larghezza;
@@ -77,15 +79,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
       //Funzione Blocca e Riparti quando tocca qualcosa
       function blocca() {
-        if(bloccoCorrente.some(index => quadrati[posizioneCorrente + index + larghezza].classList.contains('toccato'))){
+        if(bloccoCorrente.some(index => quadrati[posizioneCorrente + index + larghezza].classList.contains('toccato') )){
           bloccoCorrente.forEach(index => quadrati[posizioneCorrente + index].classList.add('toccato'));
+
           // Blocchiamo la figura e ne facciamo ripartire una nuova
-          random = Math.floor( Math.random() * Blocks.length);
+          random = Math.floor(Math.random() * Blocks.length);
           bloccoCorrente = Blocks[random][rotazioneCorrente];
           posizioneCorrente = 4;
           disegna();
         }
       }
+
+      
+      function muoviSinistra() {
+        cancella()
+        const estremoSinistro = bloccoCorrente.some(index => (posizioneCorrente + index) % larghezza === 0);
+
+        if(!estremoSinistro) {
+          posizioneCorrente -= 1;
+        }
+
+        if(bloccoCorrente.some(index => quadrati[posizioneCorrente + index].classList.contains('toccato'))) {
+          posizioneCorrente += 1;
+          disegna();
+        }
+      }
+      
+
+      
+      function controlli(e) {
+        if(e.keyCode === 37) {
+          muoviSinistra();
+        } else if(e.keyCode === 38) {
+          //ruota
+        } else if(e.keyCode === 39) {
+          //destra
+        } else if(e.keyCode === 40) {
+          scorriSotto()
+        }
+      }
+  
+      document.addEventListener('keyup', controlli);
+
+
 
 });
 
